@@ -1,0 +1,13 @@
+package: easyurlrewrite
+version: '1.0'
+author: Benjamin Hacker
+supportpage: benjamin-hacker.de
+docspage: benjamin-hacker.de
+
+page:
+  title: Easy Url Rewrite
+
+requires:
+  php:
+    version: '^7.1'
+  redaxo: '^5.7'
