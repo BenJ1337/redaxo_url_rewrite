@@ -1,6 +1,6 @@
 <?php
 
-class MyClass
+class URLRewrite
 {
     private static $instance = null;
     private $articleId2UrlMap = [];
@@ -9,6 +9,11 @@ class MyClass
     private $debug = false;
     private $multilang = false;
 
+    /**
+     * Setup URLRewriter
+     * URLRewrite constructor.
+     * @throws rex_sql_exception
+     */
     function __construct()
     {
         if ($this->debug) {
@@ -57,12 +62,17 @@ class MyClass
         }
     }
 
-    public function rewriteURL($ep)
+    /**
+     * Rewrites URLs in html markup
+     * @param $rex_extension_point {@link rex_extension_point}
+     * @return mixed|string Path and optional GET-Parameters
+     */
+    public function rewriteURL($rex_extension_point)
     {
         if (isset($params['subject']) && $params['subject'] != '') {
             return $params['subject'];
         }
-        $params = $ep->getParams();
+        $params = $rex_extension_point->getParams();
         $url = "";
         if ($this->multilang) {
             $url .= "/" . $this->langMap[$params['clang']]['code'];
@@ -89,10 +99,14 @@ class MyClass
             $urlparams = rex_string::buildQuery($params['params'], $params['separator']);
         }
 
-        return $url . ($urlparams ? '?' . $urlparams : '');;
+        return $url . ($urlparams ? '?' . $urlparams : '');
     }
 
-    public function mapURL2Article($params)
+    /**
+     * Maps the path of the requested url to article_id and if necessary the clang_id
+     * @param $rex_extension_point {@link rex_extension_point}
+     */
+    public function mapURL2Article($rex_extension_point)
     {
         $path = $_SERVER['REQUEST_URI'];
 
@@ -117,14 +131,22 @@ class MyClass
         } else {
             $article_id = $this->url2ArticleIdMap[$this->langMap[$clang_id]['code']][$path_dirs[sizeof($path_dirs)]];
         }
-        \rex_clang::setCurrentId($clang_id);
-        \rex_addon::get('structure')->setProperty('article_id', $article_id);
+        try {
+            rex_clang::setCurrentId($clang_id);
+        } catch (Exception $e) {
+            exit("Sprache nicht gefunden. Bitte den Administrator informieren: ". rex::getErrorEmail() . ". Vielen Dank!");
+        }
+        if ($article_id != null) {
+            rex_addon::get('structure')->setProperty('article_id', $article_id);
+        } else {
+            rex_article::getNotfoundArticle($clang_id);
+        }
     }
 
     public static function getInstance()
     {
         if (self::$instance == null) {
-            self::$instance = new MyClass();
+            self::$instance = new URLRewrite();
         }
         return self::$instance;
     }
