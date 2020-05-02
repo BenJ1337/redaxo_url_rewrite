@@ -1,0 +1,16 @@
+AddDefaultCharset utf-8
+
+# https://httpd.apache.org/docs/current/mod/mod_rewrite.html
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    RewriteCond %{REQUEST_URI}::$1 ^(/.+)/(.*)::\2$
+    RewriteRule ^(.*) - [E=BASE:%1]
+
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+
+    RewriteCond %{REQUEST_URI} !^/?redaxo/.*$
+
+    RewriteRule ^(.*)$ %{ENV:BASE}/index.php?%{QUERY_STRING} [L]
+</IfModule>

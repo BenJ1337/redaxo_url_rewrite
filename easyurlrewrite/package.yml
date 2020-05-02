@@ -9,5 +9,5 @@ page:
 
 requires:
   php:
-    version: '^7.1'
-  redaxo: '^5.7'
+    version: '^7.0'
+  redaxo: '^5.0'
