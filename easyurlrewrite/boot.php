@@ -1,9 +1,6 @@
 <?php
 
 if (!rex::isBackend()) {
-    print_r("<p>URL Addon loaded</p>");
-    $myclass = MyClass::getInstance();
-
     rex_extension::register('URL_REWRITE', function (rex_extension_point $ep) {
         $myclass = MyClass::getInstance();
          return $myclass->rewriteURL($ep);

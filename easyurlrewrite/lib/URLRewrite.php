@@ -6,17 +6,21 @@ class MyClass
     private $articleId2UrlMap = [];
     private $url2ArticleIdMap = [];
     private $langMap = [];
-    private $debug = true;
+    private $debug = false;
+    private $multilang = false;
 
     function __construct()
     {
-
+        if ($this->debug) {
+            print_r("<p>URL Addon loaded</p>");
+        }
 
         $sql = rex_sql::factory();
         $sql->setDBQuery("SELECT r_article.id as a_id, r_article.name as a_name, r_article.catname as a_cat_name
-                                , r_article.path as a_path, r_clang.code as cl_code, r_clang.id as cl_id
+                                , r_article.path as a_path, r_clang.code as cl_code, r_clang.id as cl_id, r_clang.status as cl_status
                                 FROM rex_article r_article 
                                 LEFT JOIN rex_clang r_clang ON (r_article.clang_id = r_clang.id)
+                                WHERE r_clang.status = 1 
                                 ORDER BY a_path");
         $tableMap = $sql->getArray();
 
@@ -38,10 +42,13 @@ class MyClass
             }
 
             if (!in_array($value['cl_id'], $this->langMap)) {
-                $this->langMap[$value['cl_id']] = $value['cl_code'];
+                $this->langMap[$value['cl_id']]['code'] = $value['cl_code'];
+                $this->langMap[$value['cl_id']]['status'] = $value['status'];
             }
         }
-
+        if (sizeof($this->langMap) > 1) {
+            $this->multilang = true;
+        }
 
         if ($this->debug) {
             print_r("<pre>" . json_encode($this->articleId2UrlMap) . "</pre>");
@@ -57,7 +64,9 @@ class MyClass
         }
         $params = $ep->getParams();
         $url = "";
-        $url .= "/" . $this->langMap[$params['clang']];
+        if ($this->multilang) {
+            $url .= "/" . $this->langMap[$params['clang']]['code'];
+        }
 
         if (isset($this->articleId2UrlMap[$params['clang']][$params['id']]['cat_ids'])
             && sizeof($this->articleId2UrlMap[$params['clang']][$params['id']]['cat_ids']) > 0) {
@@ -85,7 +94,6 @@ class MyClass
 
     public function mapURL2Article($params)
     {
-
         $path = $_SERVER['REQUEST_URI'];
 
         $path_dirs = array_filter(
@@ -94,26 +102,23 @@ class MyClass
                 return $value !== '';
             });
 
-        if ($this->debug) {
-            /* var_dump($params);
-            print_r("<pre>".$path."</pre>");
-            print_r("<pre>".implode(", ", $path_dirs)."</pre>");
-            print_r("<pre>".$path_dirs["1"]."</pre>");
-            print_r("<pre>".$path_dirs[sizeof($path_dirs)]."</pre>");
+        $clang_id = 1;
 
-
-
-            print_r("<pre>"
-                .$this->url2ArticleIdMap[$path_dirs["1"]][$path_dirs[sizeof($path_dirs)]]
-                ."</pre>");
-            */
-
+        foreach ($this->langMap as $key => $value) {
+            if ($this->multilang && $value['code'] == $path_dirs[1]) {
+                $clang_id = $key;
+            } else if ($value['status'] == 1) {
+                $clang_id = $key;
+            }
         }
 
-
-        \rex_clang::setCurrentId(1);
-        \rex_addon::get('structure')->setProperty('article_id',
-            $this->url2ArticleIdMap[$path_dirs["1"]][$path_dirs[sizeof($path_dirs)]]);
+        if ($this->multilang) {
+            $article_id = $this->url2ArticleIdMap[$path_dirs["1"]][$path_dirs[sizeof($path_dirs)]];
+        } else {
+            $article_id = $this->url2ArticleIdMap[$this->langMap[$clang_id]['code']][$path_dirs[sizeof($path_dirs)]];
+        }
+        \rex_clang::setCurrentId($clang_id);
+        \rex_addon::get('structure')->setProperty('article_id', $article_id);
     }
 
     public static function getInstance()
