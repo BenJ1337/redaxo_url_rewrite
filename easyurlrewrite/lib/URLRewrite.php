@@ -129,23 +129,27 @@ class URLRewrite
         if ($this->multilang) {
             $article_id = $this->url2ArticleIdMap[$path_dirs["1"]][$path_dirs[sizeof($path_dirs)]];
         } else {
-            $article_id = $this->url2ArticleIdMap[$this->langMap[$clang_id]['code']][$path_dirs[sizeof($path_dirs)]];
+            if(isset($this->url2ArticleIdMap[$this->langMap[$clang_id]['code']][$path_dirs[sizeof($path_dirs)]])) {
+                $article_id = $this->url2ArticleIdMap[$this->langMap[$clang_id]['code']][$path_dirs[sizeof($path_dirs)]];
+            }
         }
         try {
             rex_clang::setCurrentId($clang_id);
         } catch (Exception $e) {
             exit("Sprache nicht gefunden. Bitte den Administrator informieren: ". rex::getErrorEmail() . ". Vielen Dank!");
         }
-        if ($article_id != null) {
+
+        if (isset($article_id)) {
             rex_addon::get('structure')->setProperty('article_id', $article_id);
         } else {
-            rex_article::getNotfoundArticle($clang_id);
+            $not_found_article_id = rex_addon::get('structure')->getProperty('notfound_article_id', $clang_id);
+            rex_addon::get('structure')->setProperty('article_id', $not_found_article_id);
         }
     }
 
     public static function getInstance()
     {
-        if (self::$instance == null) {
+        if (self::$instance === NULL) {
             self::$instance = new URLRewrite();
         }
         return self::$instance;
