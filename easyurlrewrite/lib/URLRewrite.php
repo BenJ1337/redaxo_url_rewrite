@@ -30,9 +30,9 @@ class URLRewrite
         $tableMap = $sql->getArray();
 
         foreach ($tableMap as $key => $value) {
-            $this->articleId2UrlMap[$value['cl_id']][$value['a_id']]['name'] = $this->umlauteumwandeln($value['a_name']);
-            $this->articleId2UrlMap[$value['cl_id']][$value['a_id']]['cat_name'] = $this->umlauteumwandeln($value['a_cat_name']);
-            $this->url2ArticleIdMap[$value['cl_code']][$this->umlauteumwandeln($value['a_name'])] = $value['a_id'];
+            $this->articleId2UrlMap[$value['cl_id']][$value['a_id']]['name'] = urlencode($this->umlauteumwandeln($value['a_name']));
+            $this->articleId2UrlMap[$value['cl_id']][$value['a_id']]['cat_name'] = urlencode($this->umlauteumwandeln($value['a_cat_name']));
+            $this->url2ArticleIdMap[$value['cl_code']][urlencode($this->umlauteumwandeln($value['a_name']))] = $value['a_id'];
 
             $parents = array_filter(
                 explode("|", $value['a_path']),
