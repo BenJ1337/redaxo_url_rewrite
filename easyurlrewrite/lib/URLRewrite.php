@@ -108,7 +108,11 @@ class URLRewrite
      */
     public function mapURL2Article($rex_extension_point)
     {
-        $path = $_SERVER['REQUEST_URI'];
+        $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+
+        if($this->debug) {
+            var_dump($path);
+        }
 
         $path_dirs = array_filter(
             explode("/", $path),
@@ -157,7 +161,7 @@ class URLRewrite
 
     private function umlauteumwandeln($str)
     {
-        $tempstr = array("Ä" => "Ae", "Ö" => "Oe", "Ü" => "Ue", "ä" => "ae", "ö" => "oe", "ü" => "ue", " " => "+");
+        $tempstr = array("Ä" => "Ae", "Ö" => "Oe", "Ü" => "Ue", "ä" => "ae", "ö" => "oe", "ü" => "ue", " " => "-");
         return strtr($str, $tempstr);
     }
 }
