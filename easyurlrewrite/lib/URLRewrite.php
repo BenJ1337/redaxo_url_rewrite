@@ -6,7 +6,6 @@ class URLRewrite
     private $articleId2UrlMap = [];
     private $url2ArticleIdMap = [];
     private $langMap = [];
-    private $debug = false;
     private $multilang = false;
 
     /**
@@ -16,9 +15,7 @@ class URLRewrite
      */
     function __construct()
     {
-        if ($this->debug) {
-            print_r("<p>URL Addon loaded</p>");
-        }
+        dump("EasyUrlRewrite-Addon active");
 
         $sql = rex_sql::factory();
         $sql->setDBQuery("SELECT r_article.id as a_id, r_article.name as a_name, r_article.catname as a_cat_name
@@ -55,11 +52,9 @@ class URLRewrite
             $this->multilang = true;
         }
 
-        if ($this->debug) {
-            print_r("<pre>" . json_encode($this->articleId2UrlMap) . "</pre>");
-            print_r("<br>");
-            print_r("<pre>" . json_encode($this->url2ArticleIdMap) . "</pre>");
-        }
+        dump($this->articleId2UrlMap);
+        dump($this->url2ArticleIdMap);
+
     }
 
     /**
@@ -108,46 +103,57 @@ class URLRewrite
      */
     public function mapURL2Article($rex_extension_point)
     {
+        // Pfad aus der URL entnehmen
         $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-
-        if($this->debug) {
-            var_dump($path);
-        }
-
+        dump($path);
+        // Pfadabschnitte als Array
         $path_dirs = array_filter(
             explode("/", $path),
             function ($value) {
                 return $value !== '';
             });
+        dump($path_dirs);
 
         $clang_id = 1;
-
+        // Bestimmen der Sprache / CLang aus der URl
         foreach ($this->langMap as $key => $value) {
             if ($this->multilang && $value['code'] == $path_dirs[1]) {
                 $clang_id = $key;
+                break;
             } else if ($value['status'] == 1) {
                 $clang_id = $key;
+                break;
             }
         }
-
-        if ($this->multilang) {
-            $article_id = $this->url2ArticleIdMap[$path_dirs["1"]][$path_dirs[sizeof($path_dirs)]];
+        // Bestimmen der Artikel Id aus der URL
+        if ($path == "/") {
+            $article_id = rex_addon::get('structure')->getProperty('start_article_id', $clang_id);
+        } else if ($this->multilang) {
+            if(sizeof($path_dirs) === 1) {
+                $article_id = rex_addon::get('structure')->getProperty('start_article_id', $clang_id);
+            } else {
+                $article_id = $this->url2ArticleIdMap[$path_dirs["1"]][$path_dirs[sizeof($path_dirs)]];
+            }
         } else {
-            if(isset($this->url2ArticleIdMap[$this->langMap[$clang_id]['code']][$path_dirs[sizeof($path_dirs)]])) {
+            if (isset($this->url2ArticleIdMap[$this->langMap[$clang_id]['code']][$path_dirs[sizeof($path_dirs)]])) {
                 $article_id = $this->url2ArticleIdMap[$this->langMap[$clang_id]['code']][$path_dirs[sizeof($path_dirs)]];
             }
         }
+        // Wenn URL keinem Artikel zugeordnet werden konnte
+        if (!isset($article_id)) {
+            $article_id = rex_addon::get('structure')->getProperty('notfound_article_id', $clang_id);
+        }
+
+        // Setzt die Sprache
         try {
             rex_clang::setCurrentId($clang_id);
         } catch (Exception $e) {
-            exit("Sprache nicht gefunden. Bitte den Administrator informieren: ". rex::getErrorEmail() . ". Vielen Dank!");
+            exit("Sprache nicht gefunden. Bitte den Administrator informieren: " . rex::getErrorEmail() . ". Vielen Dank!");
         }
 
+        // Setzt die Artikel Id
         if (isset($article_id)) {
             rex_addon::get('structure')->setProperty('article_id', $article_id);
-        } else {
-            $not_found_article_id = rex_addon::get('structure')->getProperty('notfound_article_id', $clang_id);
-            rex_addon::get('structure')->setProperty('article_id', $not_found_article_id);
         }
     }
 
