@@ -5,7 +5,10 @@ supportpage: benjamin-hacker.de
 docspage: benjamin-hacker.de
 
 page:
-  title: Easy Url Rewrite
+  title: 'translate:easyurlrewrite_titel'
+  subpages:
+    konfiguration: { title: 'translate:easyurlrewrite_page_konfiguration_titel' }
+    beschreibung: { title: 'translate:easyurlrewrite_page_beschreibung_titel' }
 
 requires:
   php:
