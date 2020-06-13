@@ -6,6 +6,7 @@ docspage: benjamin-hacker.de
 
 page:
   title: 'translate:easyurlrewrite_titel'
+  icon: rex-icon fa-link
   subpages:
     konfiguration: { title: 'translate:easyurlrewrite_page_konfiguration_titel' }
     beschreibung: { title: 'translate:easyurlrewrite_page_beschreibung_titel' }
