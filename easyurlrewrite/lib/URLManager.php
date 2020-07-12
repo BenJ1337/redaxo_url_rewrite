@@ -79,7 +79,7 @@ class URLManager
 
     public static function convertValidURL($text) {
         $validUrl = "";
-        $sonderzeichen = array("Ä" => "Ae", "Ö" => "Oe", "Ü" => "Ue", "ä" => "ae", "ö" => "oe", "ü" => "ue", " " => "-");
+        $sonderzeichen = array("Ä" => "Ae", "Ö" => "Oe", "Ü" => "Ue", "ä" => "ae", "ö" => "oe", "ü" => "ue", " " => "-", "." => "-");
         $validUrl = strtr($text, $sonderzeichen);
 
         return urlencode($validUrl);
