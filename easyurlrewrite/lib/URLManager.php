@@ -17,8 +17,9 @@ class URLManager
 
     private function generateURLs() {
         $url = "/";
-
         $artikel2URLMap = $this->em->getArtikelId2URlMap();
+        //dump($artikel2URLMap);
+        $sprachenMap = $this->em->getSprachenMap();
 
         foreach ($artikel2URLMap as $sprache) {
             foreach ($sprache as $artikel) {
@@ -32,7 +33,10 @@ class URLManager
                         $url = $this::convertValidURL($kat->getName()) . "/" . $url;
                         $kat = $kat->getVaterKategorie();
                     }
-                    $url = $this::convertValidURL($artikel->getSprache()->getCode()) . "/" . $url;
+                    if(!empty($sprachenMap) && sizeof($sprachenMap) > 1) {
+                        $url = $this::convertValidURL($artikel->getSprache()->getCode()) . "/" . $url;
+                    }
+
                     $url = "/" . $url;
                 }
                 if(!empty($url)) {
@@ -46,23 +50,27 @@ class URLManager
 
     public function getURL($aId, $cId)
     {
-        $url = $this->idUrlMap[$cId][$aId];
-        if($url != null) {
-            $this->urlIdMap[$url]['aId'] = $aId;
-            $this->urlIdMap[$url]['cId'] = $cId;
-            return $url;
+        if(isset($this->idUrlMap[$cId][$aId])) {
+            $url = $this->idUrlMap[$cId][$aId];
+            if($url != null) {
+                $this->urlIdMap[$url]['aId'] = $aId;
+                $this->urlIdMap[$url]['cId'] = $cId;
+                return $url;
+            }
+        } else {
+            return "/index.php?article_id=".$aId."&clang=".$cId;
         }
     }
 
     public function getArtikelId($url) {
-        if($url === "/" || $url === "") {
+        if($url === "/" || $url === "" || !isset($this->urlIdMap[$url]['aId'])) {
             return rex_addon::get('structure')->getProperty('start_article_id', 1);
         }
         return $this->urlIdMap[$url]['aId'];
     }
 
     public function getSpracheId($url) {
-        if($url === "/" || $url === "") {
+        if($url === "/" || $url === "" || !isset($this->urlIdMap[$url]['cId'])) {
             return 1;
         }
         return $this->urlIdMap[$url]['cId'];

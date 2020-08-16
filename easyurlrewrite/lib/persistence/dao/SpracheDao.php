@@ -6,7 +6,8 @@ class SpracheDao extends BaseDao {
 
     public function findAll() {
         $this->dbc->setDBQuery("SELECT id, code, name, status
-                                FROM rex_clang  
+                                FROM rex_clang
+                                WHERE status = 1
                                 ORDER BY id;");
         $sprachenMap = $this->dbc->getArray();
         $spachenList = array();
