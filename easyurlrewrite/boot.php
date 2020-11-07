@@ -47,4 +47,3 @@ if (!rex::isBackend()) {
     }, rex_extension::EARLY);
 
 }
-
