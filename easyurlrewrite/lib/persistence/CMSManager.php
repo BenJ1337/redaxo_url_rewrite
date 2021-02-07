@@ -1,5 +1,5 @@
 <?php
-class EnityManager {
+class CMSManager {
     private $artikelDao;
     private $kategorieDao;
     private $spracheDao;
@@ -40,9 +40,9 @@ class EnityManager {
         foreach ($kategorienMap as $sprachen) {
             foreach ($sprachen as $kategorie) {
                 preg_match_all('/(\d+)/', $kategorie->getPath(), $matches);
-                $parrentKatIds = $matches[0];
-                if (!empty($parrentKatIds)) {
-                    $katId = $parrentKatIds[sizeof($parrentKatIds) - 1];
+                $vaterKatId = $matches[0];
+                if (!empty($vaterKatId)) {
+                    $katId = $vaterKatId[sizeof($vaterKatId) - 1];
                     $kat = $kategorienMap[$katId][$kategorie->getSprache()->getId()];
                     $kategorie->setVaterKategorie($kat);
                 }
@@ -97,9 +97,8 @@ class EnityManager {
     public static function getInstance()
     {
         if (self::$instance === NULL) {
-            self::$instance = new EnityManager();
+            self::$instance = new CMSManager();
         }
         return self::$instance;
     }
-
 }

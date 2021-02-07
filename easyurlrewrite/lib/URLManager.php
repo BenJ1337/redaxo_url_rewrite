@@ -10,7 +10,7 @@ class URLManager
 
     function __construct()
     {
-        $this->em = EnityManager::getInstance();
+        $this->em = CMSManager::getInstance();
         $this->urlIdMap = array();
         $this->generateURLs();
     }
@@ -28,10 +28,16 @@ class URLManager
                 $url = "/";
                 if($artikel != null) {
                     $url = $this::convertValidURL($artikel->getName()) . $url;
-                    $kat = $artikel->getKategorie();
-                    while($kat != null) {
-                        $url = $this::convertValidURL($kat->getName()) . "/" . $url;
-                        $kat = $kat->getVaterKategorie();
+                    if($artikel->getKategorie() !== null && $artikel->getName() !== $artikel->getKategorie()->getName()) {
+                        $kat = $artikel->getKategorie();
+                        $prevKat = '';
+                        while($kat != null) {
+                            if($prevKat !== $kat) {
+                                $url = $this::convertValidURL($kat->getName()) . "/" . $url;
+                            }
+                            $prevKat = $kat;
+                            $kat = $kat->getVaterKategorie();
+                        }
                     }
                     if(!empty($sprachenMap) && sizeof($sprachenMap) > 1) {
                         $url = $this::convertValidURL($artikel->getSprache()->getCode()) . "/" . $url;
