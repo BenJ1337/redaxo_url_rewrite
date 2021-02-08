@@ -3,9 +3,9 @@ easyurlrewrite_page_konfiguration_titel = Konfiguration
 easyurlrewrite_page_beschreibung_titel = Beschreibung
 
 easyurlrewrite_page_konfiguration_text_1 = Damit dieses URL-Rewrite-Addon funktioniert, muss die .htaccess im Wurzelverzeichnis angepasst werden.
-easyurlrewrite_page_konfiguration_text_2 = Durch Klick auf den nachfolgenden Button, wird von der aktuellen .htaccess eine Kopie 'htaccess_backup.txt' erstellt und eine neue .htaccess hinterlegt.
+easyurlrewrite_page_konfiguration_text_2 = Durch Klick auf den nachfolgenden Button, wird von der aktuellen .htaccess eine Kopie erstellt und eine neue .htaccess hinterlegt.
 easyurlrewrite_page_konfiguration_button_konfiguration_hinterlegen = Konfiguration hinterlegen
-easyurlrewrite_page_konfiguration_erfolgtext_konfiguration_hinterlegen = Konfiguration erfolgreich hinterlegt
+easyurlrewrite_page_konfiguration_erfolgtext_konfiguration_hinterlegen = Konfiguration erfolgreich hinterlegt.
 
 
 easyurlrewrite_page_beschreibung_text_1 = Dieses Addon ersetzt die Standard Get-Parameter von Redaxo (?article_id=1&clang=1) durch eine suchmaschinen- und besucherfreundliche URL.

@@ -12,13 +12,13 @@ class URLManager
     {
         $this->em = CMSManager::getInstance();
         $this->urlIdMap = array();
+        $this->idUrlMap = array();
         $this->generateURLs();
     }
 
     private function generateURLs() {
         $url = "/";
         $artikel2URLMap = $this->em->getArtikelId2URlMap();
-        //dump($artikel2URLMap);
         $sprachenMap = $this->em->getSprachenMap();
 
         foreach ($artikel2URLMap as $sprache) {
@@ -46,6 +46,9 @@ class URLManager
                     $url = "/" . $url;
                 }
                 if(!empty($url)) {
+                    while(array_key_exists($url, $this->urlIdMap) || array_key_exists($url, $this->idUrlMap)) {
+                        $url .= '-';
+                    }
                     $this->urlIdMap[$url]['aId'] = $aId;
                     $this->urlIdMap[$url]['cId'] = $cId;
                     $this->idUrlMap[$cId][$aId] = $url;
