@@ -4,16 +4,19 @@ AddDefaultCharset utf-8
 <IfModule mod_rewrite.c>
     RewriteEngine On
 
-    RewriteCond %{REQUEST_URI}::$1 ^(/.+)/(.*)::\2$
-    RewriteRule ^(.*) - [E=BASE:%1]
-
+    # Es soll nicht geprüft werden, ob für den Pfad + Datei des HTTP-Requests eine Datei im Dateisystem existiert
     RewriteCond %{REQUEST_FILENAME} !-f
+
+    # Es soll nicht geprüft werden, ob für den Pfad des HTTP-Requests ein Verzeichnis im Dateisystem existiert
     RewriteCond %{REQUEST_FILENAME} !-d
 
+    # URLs die auf Bilder verweisen oder auf das Backend zeigen sollen nicht umgeleitet werden
     RewriteCond %{REQUEST_URI} !^/?redaxo/.*$
     RewriteCond %{REQUEST_URI} !^/?media/.*$
 
+    # URLs, die Punkte "." enthalten, sollen nicht umgeleitet werden
     RewriteCond %{REQUEST_URI} !^.*\..*$
 
+    # URLs umleiten zur /index.php
     RewriteRule ^(.*)$ %{ENV:BASE}/index.php?%{QUERY_STRING} [L]
 </IfModule>

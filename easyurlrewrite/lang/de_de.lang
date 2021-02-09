@@ -2,8 +2,8 @@ easyurlrewrite_titel = Easy Url Rewrite
 easyurlrewrite_page_konfiguration_titel = Konfiguration
 easyurlrewrite_page_beschreibung_titel = Beschreibung
 
-easyurlrewrite_page_konfiguration_text_1 = Damit dieses URL-Rewrite-Addon funktioniert, muss die .htaccess im Wurzelverzeichnis angepasst werden.
-easyurlrewrite_page_konfiguration_text_2 = Durch Klick auf den nachfolgenden Button, wird von der aktuellen .htaccess eine Kopie erstellt und eine neue .htaccess hinterlegt.
+easyurlrewrite_page_konfiguration_text_1 = 
+easyurlrewrite_page_konfiguration_text_2 = Durch Klick auf den nachfolgenden Button wird von der aktuellen .htaccess eine Kopie erstellt und eine neue .htaccess in das Wurzelverzeichnis bzw. in das gleiche Verzeichnis wie "./redaox/" kopiert.
 easyurlrewrite_page_konfiguration_button_konfiguration_hinterlegen = Konfiguration hinterlegen
 easyurlrewrite_page_konfiguration_erfolgtext_konfiguration_hinterlegen = Konfiguration erfolgreich hinterlegt.
 
