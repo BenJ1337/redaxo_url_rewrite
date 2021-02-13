@@ -16,7 +16,8 @@ class URLManager
         $this->generateURLs();
     }
 
-    private function generateURLs() {
+    private function generateURLs()
+    {
         $url = "/";
         $artikel2URLMap = $this->em->getArtikelId2URlMap();
         $sprachenMap = $this->em->getSprachenMap();
@@ -26,27 +27,27 @@ class URLManager
                 $aId = $artikel->getId();
                 $cId = $artikel->getSprache()->getId();
                 $url = "/";
-                if($artikel != null) {
+                if ($artikel != null) {
                     $url = $this::convertValidURL($artikel->getName()) . $url;
-                    if($artikel->getKategorie() !== null && $artikel->getName() !== $artikel->getKategorie()->getName()) {
+                    if ($artikel->getKategorie() !== null && $artikel->getName() !== $artikel->getKategorie()->getName()) {
                         $kat = $artikel->getKategorie();
                         $prevKat = '';
-                        while($kat != null) {
-                            if($prevKat !== $kat) {
+                        while ($kat != null) {
+                            if ($prevKat !== $kat) {
                                 $url = $this::convertValidURL($kat->getName()) . "/" . $url;
                             }
                             $prevKat = $kat;
                             $kat = $kat->getVaterKategorie();
                         }
                     }
-                    if(!empty($sprachenMap) && sizeof($sprachenMap) > 1) {
+                    if (!empty($sprachenMap) && sizeof($sprachenMap) > 1) {
                         $url = $this::convertValidURL($artikel->getSprache()->getCode()) . "/" . $url;
                     }
 
                     $url = "/" . $url;
                 }
-                if(!empty($url)) {
-                    while(array_key_exists($url, $this->urlIdMap) || array_key_exists($url, $this->idUrlMap)) {
+                if (!empty($url)) {
+                    while (array_key_exists($url, $this->urlIdMap) || array_key_exists($url, $this->idUrlMap)) {
                         $url .= '-';
                     }
                     $this->urlIdMap[$url]['aId'] = $aId;
@@ -59,27 +60,33 @@ class URLManager
 
     public function getURL($aId, $cId)
     {
-        if(isset($this->idUrlMap[$cId][$aId])) {
+        if (isset($this->idUrlMap[$cId][$aId])) {
             $url = $this->idUrlMap[$cId][$aId];
-            if($url != null) {
+            if ($url != null) {
                 $this->urlIdMap[$url]['aId'] = $aId;
                 $this->urlIdMap[$url]['cId'] = $cId;
                 return $url;
             }
         } else {
-            return "/index.php?article_id=".$aId."&clang=".$cId;
+            return "/index.php?article_id=" . $aId . "&clang=" . $cId;
         }
     }
 
-    public function getArtikelId($url) {
-        if($url === "/" || $url === "" || !isset($this->urlIdMap[$url]['aId'])) {
+    public function getArtikelId($url)
+    {
+        if ($url === "/" || $url === "") {
             return rex_addon::get('structure')->getProperty('start_article_id', 1);
+        } else if (!isset($this->urlIdMap[$url]['aId'])) {
+            //TODO Sprache abhängig von Prio
+            $cId = 1;
+            return rex_addon::get('structure')->getProperty('notfound_article_id', $cId);
         }
         return $this->urlIdMap[$url]['aId'];
     }
 
-    public function getSpracheId($url) {
-        if($url === "/" || $url === "" || !isset($this->urlIdMap[$url]['cId'])) {
+    public function getSpracheId($url)
+    {
+        if ($url === "/" || $url === "" || !isset($this->urlIdMap[$url]['cId'])) {
             return 1;
         }
         return $this->urlIdMap[$url]['cId'];
@@ -94,7 +101,8 @@ class URLManager
         return self::$instance;
     }
 
-    public static function convertValidURL($text) {
+    public static function convertValidURL($text)
+    {
         $validUrl = "";
         $sonderzeichen = array("Ä" => "Ae", "Ö" => "Oe", "Ü" => "Ue", "ä" => "ae", "ö" => "oe", "ü" => "ue", " " => "-", "." => "-");
         $validUrl = strtr($text, $sonderzeichen);
