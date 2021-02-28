@@ -31,9 +31,9 @@ class URLManager
                     $url = $this::convertValidURL($artikel->getName()) . $url;
                     if ($artikel->getKategorie() !== null && $artikel->getName() !== $artikel->getKategorie()->getName()) {
                         $kat = $artikel->getKategorie();
-                        $prevKat = '';
+                        $prevKat = null;
                         while ($kat != null) {
-                            if ($prevKat !== $kat) {
+                            if ($prevKat !== null && $prevKat->getName() !== $kat->getName()) {
                                 $url = $this::convertValidURL($kat->getName()) . "/" . $url;
                             }
                             $prevKat = $kat;
