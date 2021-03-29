@@ -27,6 +27,7 @@ if (!rex::isBackend()) {
             $um = URLManager::getInstance();
 
             $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+            $path = strtolower($path);
             $aId = $um->getArtikelId($path);
             $cId = $um->getSpracheId($path);
 

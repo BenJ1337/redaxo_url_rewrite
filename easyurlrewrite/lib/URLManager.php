@@ -50,6 +50,7 @@ class URLManager
                     while (array_key_exists($url, $this->urlIdMap) || array_key_exists($url, $this->idUrlMap)) {
                         $url .= '-';
                     }
+                    $url = strtolower($url);
                     $this->urlIdMap[$url]['aId'] = $aId;
                     $this->urlIdMap[$url]['cId'] = $cId;
                     $this->idUrlMap[$cId][$aId] = $url;
