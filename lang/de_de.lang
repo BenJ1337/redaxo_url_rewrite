@@ -1,11 +1,11 @@
-easyurlrewrite_titel = Easy Url Rewrite
-easyurlrewrite_page_konfiguration_titel = Konfiguration
-easyurlrewrite_page_beschreibung_titel = Beschreibung
+titel = Easy Url Rewrite
+page_konfiguration_titel = Konfiguration
+page_beschreibung_titel = Beschreibung
 
-easyurlrewrite_page_konfiguration_text_1 = 
-easyurlrewrite_page_konfiguration_text_2 = Durch Klick auf den nachfolgenden Button wird von der aktuellen .htaccess eine Kopie erstellt und eine neue .htaccess in das Wurzelverzeichnis bzw. in das gleiche Verzeichnis wie "./redaox/" kopiert.
-easyurlrewrite_page_konfiguration_button_konfiguration_hinterlegen = Konfiguration hinterlegen
-easyurlrewrite_page_konfiguration_erfolgtext_konfiguration_hinterlegen = Konfiguration erfolgreich hinterlegt.
+page_konfiguration_text_1 = 
+page_konfiguration_text_2 = Durch Klick auf den nachfolgenden Button wird von der aktuellen .htaccess eine Kopie erstellt und eine neue .htaccess in das Wurzelverzeichnis bzw. in das gleiche Verzeichnis wie "./redaox/" kopiert.
+page_konfiguration_button_konfiguration_hinterlegen = Konfiguration hinterlegen
+page_konfiguration_erfolgtext_konfiguration_hinterlegen = Konfiguration erfolgreich hinterlegt.
 
 
-easyurlrewrite_page_beschreibung_text_1 = Dieses Addon ersetzt die Standard Get-Parameter von Redaxo (?article_id=1&clang=1) durch eine suchmaschinen- und besucherfreundliche URL.
+page_beschreibung_text_1 = Dieses Addon ersetzt die Standard Get-Parameter von Redaxo (?article_id=1&clang=1) durch eine suchmaschinen- und besucherfreundliche URL.

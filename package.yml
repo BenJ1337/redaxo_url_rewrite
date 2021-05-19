@@ -1,16 +1,16 @@
-package: easyurlrewrite
+package: redaxo_url_rewrite
 version: '1.0'
 author: Benjamin Hacker
 supportpage: benjamin-hacker.de
 docspage: benjamin-hacker.de
 
 page:
-  title: 'translate:easyurlrewrite_titel'
+  title: 'translate:titel'
   icon: rex-icon fa-link
   perm: admin
   subpages:
-    konfiguration: { title: 'translate:easyurlrewrite_page_konfiguration_titel' }
-    beschreibung: { title: 'translate:easyurlrewrite_page_beschreibung_titel' }
+    konfiguration: { title: 'translate:page_konfiguration_titel' }
+    beschreibung: { title: 'translate:page_beschreibung_titel' }
 
 requires:
   php:
