@@ -1,4 +1,7 @@
 <?php
+
+namespace redaxo_url_rewrite;
+
 class CMSManager {
     private $artikelDao;
     private $kategorieDao;

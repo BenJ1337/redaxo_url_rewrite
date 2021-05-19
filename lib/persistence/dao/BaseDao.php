@@ -1,4 +1,9 @@
 <?php
+
+namespace redaxo_url_rewrite;
+
+use rex_sql;
+
 class BaseDao {
     protected $dbc;
 

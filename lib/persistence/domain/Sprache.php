@@ -1,4 +1,7 @@
 <?php
+
+namespace redaxo_url_rewrite;
+
 class Sprache {
     private $id;
     private $status;

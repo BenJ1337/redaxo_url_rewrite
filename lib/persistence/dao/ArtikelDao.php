@@ -1,4 +1,7 @@
 <?php
+
+namespace redaxo_url_rewrite;
+
 class ArtikelDao extends BaseDao {
     function __construct() {
         parent::__construct();

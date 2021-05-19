@@ -3,7 +3,7 @@
 if (!rex::isBackend()) {
     rex_extension::register('URL_REWRITE', function (rex_extension_point $rex_extension_point) {
 
-        $um = URLManager::getInstance();
+        $um = redaxo_url_rewrite\URLManager::getInstance();
 
         $params = $rex_extension_point->getParams();
         $cId = $params['clang'];
@@ -24,7 +24,7 @@ if (!rex::isBackend()) {
             strpos($getParams, $getParamArtikelId) === false
             && strpos($getParams, $getParamSpracheId) === false
         ) {
-            $um = URLManager::getInstance();
+            $um = redaxo_url_rewrite\URLManager::getInstance();
 
             $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
             $path = strtolower($path);

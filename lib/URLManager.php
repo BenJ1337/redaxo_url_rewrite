@@ -1,5 +1,7 @@
 <?php
 
+namespace redaxo_url_rewrite;
+
 class URLManager
 {
 

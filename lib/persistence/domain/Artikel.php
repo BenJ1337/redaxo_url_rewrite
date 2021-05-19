@@ -1,4 +1,7 @@
 <?php
+
+namespace redaxo_url_rewrite;
+
 class Artikel {
     private $id;
     private $kategorie;
