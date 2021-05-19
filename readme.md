@@ -5,11 +5,7 @@ It supports multilingual websites with Redaxo without extra configuration.
 
 ## Installation
 
-1. copy the easyurlrewrite directory inside /redaxo/src/addons
-2. log in your Redaxo backend
-3. navigate to AddOns and click install 
-4. navigate to the setup / addOn Page "Easy Url Rewrite" and copy the .htaccess to the root directory of your Redaxo CMS.
-5. Test your website and enjoy the search engine friendly URLs.
+clone or copy this repository to your Redaxo installation under /redaxo/src/addons/<this-repository>
 
 
 Inspired By:
