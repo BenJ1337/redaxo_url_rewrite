@@ -7,10 +7,12 @@ if (isset($_POST["htaccess"])) {
     while (file_exists(rex_path::frontend($filename . ($index++ < 1 ? "" : $index) . ".txt"))) {
     }
     rex_file::copy(rex_path::frontend(".htaccess"), rex_path::frontend($filename . ($index <= 1 ? "" : $index) . ".txt"));
-    rex_file::copy(rex_path::addon("easyurlrewrite", "var/.htaccess"), rex_path::frontend(".htaccess"));
+    // TODO Datei nicht gefunden => Fehlermeldung ausgeben
+    rex_file::copy(rex_path::addon("redaxo_url_rewrite", "var/.htaccess"), rex_path::frontend(".htaccess"));
     rex_delete_cache();
     $html .= "<div class=\"alert alert-success\">";
-    $html .= "<p>" . rex_i18n::msg("easyurlrewrite_page_konfiguration_erfolgtext_konfiguration_hinterlegen") . "</p>";
+    $html .= "<p>" . rex_i18n::msg("page_konfiguration_erfolgtext_konfiguration_hinterlegen") . "</p>";
+    // TODO Nur anzeigen, wenn .htaccess bereit vorhanden war
     $html .= "<p>Der ursprüngliche Inhalt von .htaccess wurde in \"" . $filename . ($index <= 1 ? "" : $index) . ".txt" . "\" kopiert</p>";
     $html .= "</div>";
     echo $html;
@@ -19,7 +21,7 @@ if (isset($_POST["htaccess"])) {
 
 <div class="panel panel-default">
     <div class="panel-body">
-        <h1><?php echo rex_i18n::msg("easyurlrewrite_page_konfiguration_titel") ?></h1>
+        <h1><?php echo rex_i18n::msg("page_konfiguration_titel") ?></h1>
         <div class="panel panel-default">
             <div class="panel-heading">Allgemeine Hinweise</div>
             <div class="panel-body">
@@ -38,7 +40,7 @@ if (isset($_POST["htaccess"])) {
         <div class="panel panel-default">
             <div class="panel-heading">Inhalt der .htaccess zum selberkopieren</div>
             <div class="panel-body">
-                <?php echo nl2br(htmlspecialchars(rex_file::get(rex_path::addon("easyurlrewrite", "var/.htaccess"), 'Datei nicht gefunden.')));
+                <?php echo nl2br(htmlspecialchars(rex_file::get(rex_path::addon("redaxo_url_rewrite", "var/.htaccess"), 'Datei nicht gefunden.')));
 
                 ?>
             </div>
@@ -52,11 +54,11 @@ if (isset($_POST["htaccess"])) {
                 <a href="https://httpd.apache.org/docs/current/mod/mod_rewrite.html">siehe httpd.apache.org/docs/current/mod/mod_rewrite.html></a>
             </div>
         </div>
-        <p><?php echo rex_i18n::msg("easyurlrewrite_page_konfiguration_text_2") ?></p>
+        <p><?php echo rex_i18n::msg("page_konfiguration_text_2") ?></p>
 
         <form action="<?php echo $_SERVER["REQUEST_URI"] ?>" method="post">
             <button name="htaccess" type="submit" class="btn btn-success">
-                <?php echo rex_i18n::msg("easyurlrewrite_page_konfiguration_button_konfiguration_hinterlegen") ?>
+                <?php echo rex_i18n::msg("page_konfiguration_button_konfiguration_hinterlegen") ?>
             </button>
         </form>
     </div>

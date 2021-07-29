@@ -2,6 +2,8 @@
 
 namespace redaxo_url_rewrite;
 
+use rex_addon;
+
 class URLManager
 {
 
