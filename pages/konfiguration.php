@@ -1,22 +1,61 @@
 <?php
-$html = "";
 
-if (isset($_POST["htaccess"])) {
-    $filename = "htaccess_backup";
-    $index = 0;
+function copyHtaccess()
+{
+    $newHtaccessHinterlegt = rex_file::copy(rex_path::addon("redaxo_url_rewrite", "var/.htaccess"), rex_path::frontend(".htaccess"));
+    if ($newHtaccessHinterlegt) {
+        rex_delete_cache();
+    }
+    return $newHtaccessHinterlegt;
+}
+
+function backupHtaccess(&$filename, &$index)
+{
     while (file_exists(rex_path::frontend($filename . ($index++ < 1 ? "" : $index) . ".txt"))) {
     }
-    rex_file::copy(rex_path::frontend(".htaccess"), rex_path::frontend($filename . ($index <= 1 ? "" : $index) . ".txt"));
-    // TODO Datei nicht gefunden => Fehlermeldung ausgeben
-    rex_file::copy(rex_path::addon("redaxo_url_rewrite", "var/.htaccess"), rex_path::frontend(".htaccess"));
-    rex_delete_cache();
-    $html .= "<div class=\"alert alert-success\">";
-    $html .= "<p>" . rex_i18n::msg("page_konfiguration_erfolgtext_konfiguration_hinterlegen") . "</p>";
-    // TODO Nur anzeigen, wenn .htaccess bereit vorhanden war
-    $html .= "<p>Der ursprüngliche Inhalt von .htaccess wurde in \"" . $filename . ($index <= 1 ? "" : $index) . ".txt" . "\" kopiert</p>";
-    $html .= "</div>";
-    echo $html;
+    return rex_file::copy(rex_path::frontend(".htaccess"), rex_path::frontend($filename . ($index <= 1 ? "" : $index) . ".txt"));
 }
+?>
+<?php
+
+$html = "";
+$filename = "htaccess_backup";
+$index = 0;
+
+if (isset($_POST["htaccess"])) {
+    if (is_file(rex_path::frontend(".htaccess"))) {
+        if (backupHtaccess($filename, $index)) {
+            $html .= "<div class=\"alert alert-success\">";
+            $html .= "<p><b>Erfolg:</b> Der ursprüngliche Inhalt von .htaccess wurde in \"" . $filename . ($index <= 1 ? "" : $index) . ".txt" . "\" kopiert</p>";
+            $html .= "</div>";
+
+            if (copyHtaccess()) {
+                $html .= "<div class=\"alert alert-success\">";
+                $html .= "<p><b>Erfolg:</b> " . rex_i18n::msg("page_konfiguration_erfolgtext_konfiguration_hinterlegen") . "</p>";
+            } else {
+                $html .= "<div class=\"alert alert-danger\">";
+                $html .= "<p><b>Fehler:</b> .htaccess konnte nicht hinterlegt werden!</p>";
+            }
+            $html .= "</div>";
+        } else {
+            $html .= "<div class=\"alert alert-danger\">";
+            $html .= "<p><b>Fehler:</b> Die aktuelle im Wurzelverzeichnis (Vaterverzeichnis von /redaxo) hinterlegte .htaccess konnte nicht kopiert/gesichert werden. Keine Änderungen vorgenommen</p>";
+            $html .= "</div>";
+        }
+    } else {
+        if (copyHtaccess()) {
+            $html .= "<div class=\"alert alert-success\">";
+            $html .= "<p>" . rex_i18n::msg("page_konfiguration_erfolgtext_konfiguration_hinterlegen") . "</p>";
+        } else {
+            $html .= "<div class=\"alert alert-danger\">";
+            $html .= "<p><b>Fehler:</b> .htaccess konnte nicht hinterlegt werden!</p>";
+        }
+        $html .= "</div>";
+    }
+}
+
+echo $html;
+
 ?>
 
 <div class="panel panel-default">
