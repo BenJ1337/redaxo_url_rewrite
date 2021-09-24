@@ -2,7 +2,8 @@
 
 namespace redaxo_url_rewrite;
 
-use rex_addon;
+use rex_addon,
+    rex_path;
 
 class URLManager
 {
@@ -80,7 +81,7 @@ class URLManager
     public function getArtikelId($url)
     {
         $aId = -1;
-        if ($url === "/" || $url === "") {
+        if ($url === "/" || $url === "" || str_ends_with(str_replace('\\', '/', rex_path::base()), $url)) {
             return rex_addon::get('structure')->getProperty('start_article_id', 1);
         } else if (!isset($this->urlIdMap[$url]['aId'])) {
             $tmpURL = $url;
