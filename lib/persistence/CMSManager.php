@@ -39,7 +39,6 @@ class CMSManager {
 
         $kategorienMap = $this->getKategorienMap($sprachenMap);
 
-
         foreach ($kategorienMap as $sprachen) {
             foreach ($sprachen as $kategorie) {
                 preg_match_all('/(\d+)/', $kategorie->getPath(), $matches);

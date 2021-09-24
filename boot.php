@@ -28,6 +28,9 @@ if (!rex::isBackend()) {
 
             $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
             $path = strtolower($path);
+            if (!str_ends_with($path, '/')) {
+                $path .= '/';
+            }
             $aId = $um->getArtikelId($path);
             $cId = $um->getSpracheId($path);
 

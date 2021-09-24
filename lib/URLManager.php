@@ -79,14 +79,30 @@ class URLManager
 
     public function getArtikelId($url)
     {
+        $aId = -1;
         if ($url === "/" || $url === "") {
             return rex_addon::get('structure')->getProperty('start_article_id', 1);
         } else if (!isset($this->urlIdMap[$url]['aId'])) {
-            //TODO Sprache abhängig von Prio
-            $cId = 1;
-            return rex_addon::get('structure')->getProperty('notfound_article_id', $cId);
+            $tmpURL = $url;
+            // dump($tmpURL);
+            // dump($this->urlIdMap);
+            while (!empty($tmpURL) && $aId == -1 && strpos($tmpURL, '/') !== false) {
+                $indexFirstSlash = strpos($tmpURL, '/');
+                $tmpURL = substr($tmpURL, $indexFirstSlash + 1);
+                // dump($tmpURL);
+                if (isset($this->urlIdMap['/' . $tmpURL]['aId'])) {
+                    $aId = $this->urlIdMap['/' . $tmpURL]['aId'];
+                }
+            }
+            if ($aId == -1) {
+                //TODO Sprache abhängig von Prio
+                $cId = 1;
+                return rex_addon::get('structure')->getProperty('notfound_article_id', $cId);
+            }
+        } else {
+            $aId = $this->urlIdMap[$url]['aId'];
         }
-        return $this->urlIdMap[$url]['aId'];
+        return $aId;
     }
 
     public function getSpracheId($url)
