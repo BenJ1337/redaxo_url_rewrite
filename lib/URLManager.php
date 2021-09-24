@@ -67,7 +67,7 @@ class URLManager
 
     public function getURL($aId, $cId)
     {
-        $redaxoRoot = $this->getSubdirectory();
+        $redaxoRoot = URLManager::getSubdirectory();
         if ($redaxoRoot !== '/') {
             while (str_starts_with($redaxoRoot, '/')) {
                 $redaxoRoot = substr($redaxoRoot, 1, strlen($redaxoRoot));
@@ -90,7 +90,7 @@ class URLManager
         return $redaxoRoot . "/index.php?article_id=" . $aId . "&clang=" . $cId;
     }
 
-    private function getSubdirectory()
+    public static function getSubdirectory()
     {
         $redaxoRoot = rex_config::get(rex_addon::get('redaxo_url_rewrite')->getName(), 'redaxo_root', '/');
         if (!str_ends_with($redaxoRoot, '/')) {
@@ -105,7 +105,7 @@ class URLManager
     public function getArtikelId($url)
     {
         $aId = -1;
-        $redaxoRoot = $this->getSubdirectory();
+        $redaxoRoot = URLManager::getSubdirectory();
         if ($url === $redaxoRoot || $url === "") {
             return rex_addon::get('structure')->getProperty('start_article_id', 1);
         } else if (isset($this->urlIdMap[$url]['aId'])) {

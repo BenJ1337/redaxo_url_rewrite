@@ -15,5 +15,5 @@ page:
 
 requires:
   php:
-    version: '>=7.4'
+    version: '>=7.4.0'
   redaxo: '>=5.0.0'
