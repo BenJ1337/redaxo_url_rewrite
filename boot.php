@@ -31,6 +31,9 @@ if (!rex::isBackend()) {
             if (!str_ends_with($path, '/')) {
                 $path .= '/';
             }
+            if (!str_starts_with($path, '/')) {
+                $path = '/' . $path;
+            }
             $aId = $um->getArtikelId($path);
             $cId = $um->getSpracheId($path);
 

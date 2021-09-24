@@ -3,7 +3,8 @@
 namespace redaxo_url_rewrite;
 
 use rex_addon,
-    rex_path;
+
+    rex_config;
 
 class URLManager
 {
@@ -66,24 +67,52 @@ class URLManager
 
     public function getURL($aId, $cId)
     {
+        $redaxoRoot = $this->getSubdirectory();
+        if ($redaxoRoot !== '/') {
+            while (str_starts_with($redaxoRoot, '/')) {
+                $redaxoRoot = substr($redaxoRoot, 1, strlen($redaxoRoot));
+            }
+            while (str_ends_with($redaxoRoot, '/')) {
+                $redaxoRoot = substr($redaxoRoot, 0, strlen($redaxoRoot) - 1);
+            }
+        }
         if (isset($this->idUrlMap[$cId][$aId])) {
             $url = $this->idUrlMap[$cId][$aId];
             if ($url != null) {
                 $this->urlIdMap[$url]['aId'] = $aId;
                 $this->urlIdMap[$url]['cId'] = $cId;
+                if ($redaxoRoot !== '') {
+                    return '/' . $redaxoRoot . $url;
+                }
                 return $url;
-            }
-        } else {
-            return "/index.php?article_id=" . $aId . "&clang=" . $cId;
+            } 
         }
+        return $redaxoRoot . "/index.php?article_id=" . $aId . "&clang=" . $cId;
+    }
+
+    private function getSubdirectory()
+    {
+        $redaxoRoot = rex_config::get(rex_addon::get('redaxo_url_rewrite')->getName(), 'redaxo_root', '/');
+        if (!str_ends_with($redaxoRoot, '/')) {
+            $redaxoRoot .= '/';
+        }
+        if (!str_starts_with($redaxoRoot, '/')) {
+            $redaxoRoot = '/' . $redaxoRoot;
+        }
+        return $redaxoRoot;
     }
 
     public function getArtikelId($url)
     {
         $aId = -1;
-        if ($url === "/" || $url === "" || str_ends_with(str_replace('\\', '/', rex_path::base()), $url)) {
+        $redaxoRoot = $this->getSubdirectory();
+        if ($url === $redaxoRoot || $url === "") {
             return rex_addon::get('structure')->getProperty('start_article_id', 1);
-        } else if (!isset($this->urlIdMap[$url]['aId'])) {
+        } else if (isset($this->urlIdMap[$url]['aId'])) {
+            $aId = $this->urlIdMap[$url]['aId'];
+        } else if (isset($this->urlIdMap[$redaxoRoot . $url]['aId'])) {
+            $aId = $this->urlIdMap[$redaxoRoot . $url]['aId'];
+        } else {
             $tmpURL = $url;
             // dump($tmpURL);
             // dump($this->urlIdMap);
@@ -100,8 +129,6 @@ class URLManager
                 $cId = 1;
                 return rex_addon::get('structure')->getProperty('notfound_article_id', $cId);
             }
-        } else {
-            $aId = $this->urlIdMap[$url]['aId'];
         }
         return $aId;
     }

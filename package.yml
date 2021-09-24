@@ -11,8 +11,9 @@ page:
   subpages:
     konfiguration: { title: 'translate:page_konfiguration_titel' }
     beschreibung: { title: 'translate:page_beschreibung_titel' }
+    webroot: { title: 'translate:page_webroot_titel' }
 
 requires:
   php:
-    version: '>=7.0'
+    version: '>=7.4'
   redaxo: '>=5.0.0'
