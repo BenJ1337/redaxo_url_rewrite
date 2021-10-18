@@ -7,8 +7,6 @@ class CMSManager {
     private $kategorieDao;
     private $spracheDao;
 
-    private $sprachenMap;
-
     private $artikelId2URlMap;
     private $artikelURL2IdMap;
 
@@ -39,7 +37,6 @@ class CMSManager {
 
         $kategorienMap = $this->getKategorienMap($sprachenMap);
 
-
         foreach ($kategorienMap as $sprachen) {
             foreach ($sprachen as $kategorie) {
                 preg_match_all('/(\d+)/', $kategorie->getPath(), $matches);
@@ -52,7 +49,6 @@ class CMSManager {
             }
         }
 
-        $artikelURLMap = array();
         foreach ($artikelList as $artikel) {
             if(isset($sprachenMap[$artikel->getSprache()])) {
                 $artikel->setSprache($sprachenMap[$artikel->getSprache()]);

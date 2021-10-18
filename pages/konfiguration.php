@@ -2,11 +2,12 @@
 
 function copyHtaccess()
 {
-    $newHtaccessHinterlegt = rex_file::copy(rex_path::addon("redaxo_url_rewrite", "var/.htaccess"), rex_path::frontend(".htaccess"));
-    if ($newHtaccessHinterlegt) {
-        rex_delete_cache();
-    }
-    return $newHtaccessHinterlegt;
+    $htaccessContentTemplate = rex_file::get(rex_path::addon("redaxo_url_rewrite", "var/.htaccess"));
+    $subdir = str_replace("/redaxo/index.php", "", parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
+    $htaccessContent = str_replace('<subdir>', $subdir, $htaccessContentTemplate);
+    rex_file::put(rex_path::frontend(".htaccess"), $htaccessContent);
+    rex_delete_cache();
+    return true;
 }
 
 function backupHtaccess(&$filename, &$index)

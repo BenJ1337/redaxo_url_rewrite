@@ -1,6 +1,7 @@
 titel = Easy Url Rewrite
 page_konfiguration_titel = Konfiguration
 page_beschreibung_titel = Beschreibung
+page_webroot_titel = Web Wurzelverzeichnis
 
 page_konfiguration_text_1 = 
 page_konfiguration_text_2 = Durch Klick auf den nachfolgenden Button wird von der aktuellen .htaccess eine Kopie erstellt und eine neue .htaccess in das Wurzelverzeichnis bzw. in das gleiche Verzeichnis wie "./redaox/" kopiert.

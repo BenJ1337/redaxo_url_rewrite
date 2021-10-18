@@ -2,7 +2,9 @@
 
 namespace redaxo_url_rewrite;
 
-use rex_addon;
+use rex_addon,
+
+    rex_config;
 
 class URLManager
 {
@@ -65,28 +67,70 @@ class URLManager
 
     public function getURL($aId, $cId)
     {
+        $redaxoRoot = URLManager::getSubdirectory();
+        if ($redaxoRoot !== '/') {
+            while (str_starts_with($redaxoRoot, '/')) {
+                $redaxoRoot = substr($redaxoRoot, 1, strlen($redaxoRoot));
+            }
+            while (str_ends_with($redaxoRoot, '/')) {
+                $redaxoRoot = substr($redaxoRoot, 0, strlen($redaxoRoot) - 1);
+            }
+        }
         if (isset($this->idUrlMap[$cId][$aId])) {
             $url = $this->idUrlMap[$cId][$aId];
             if ($url != null) {
                 $this->urlIdMap[$url]['aId'] = $aId;
                 $this->urlIdMap[$url]['cId'] = $cId;
+                if ($redaxoRoot !== '') {
+                    return '/' . $redaxoRoot . $url;
+                }
                 return $url;
-            }
-        } else {
-            return "/index.php?article_id=" . $aId . "&clang=" . $cId;
+            } 
         }
+        return $redaxoRoot . "/index.php?article_id=" . $aId . "&clang=" . $cId;
+    }
+
+    public static function getSubdirectory()
+    {
+        $redaxoRoot = rex_config::get(rex_addon::get('redaxo_url_rewrite')->getName(), 'redaxo_root', '/');
+        if (!str_ends_with($redaxoRoot, '/')) {
+            $redaxoRoot .= '/';
+        }
+        if (!str_starts_with($redaxoRoot, '/')) {
+            $redaxoRoot = '/' . $redaxoRoot;
+        }
+        return $redaxoRoot;
     }
 
     public function getArtikelId($url)
     {
-        if ($url === "/" || $url === "") {
+        $aId = -1;
+        $redaxoRoot = URLManager::getSubdirectory();
+        if ($url === $redaxoRoot || $url === "") {
             return rex_addon::get('structure')->getProperty('start_article_id', 1);
-        } else if (!isset($this->urlIdMap[$url]['aId'])) {
-            //TODO Sprache abhängig von Prio
-            $cId = 1;
-            return rex_addon::get('structure')->getProperty('notfound_article_id', $cId);
+        } else if (isset($this->urlIdMap[$url]['aId'])) {
+            $aId = $this->urlIdMap[$url]['aId'];
+        } else if (isset($this->urlIdMap[$redaxoRoot . $url]['aId'])) {
+            $aId = $this->urlIdMap[$redaxoRoot . $url]['aId'];
+        } else {
+            $tmpURL = $url;
+            // dump($tmpURL);
+            // dump($this->urlIdMap);
+            while (!empty($tmpURL) && $aId == -1 && strpos($tmpURL, '/') !== false) {
+                $indexFirstSlash = strpos($tmpURL, '/');
+                $tmpURL = substr($tmpURL, $indexFirstSlash + 1);
+                // dump($tmpURL);
+                if (isset($this->urlIdMap['/' . $tmpURL]['aId'])) {
+                    $aId = $this->urlIdMap['/' . $tmpURL]['aId'];
+                }
+            }
+            if ($aId == -1) {
+                //TODO Sprache abhängig von Prio
+                $cId = 1;
+                return rex_addon::get('structure')->getProperty('notfound_article_id', $cId);
+            }
         }
-        return $this->urlIdMap[$url]['aId'];
+        return $aId;
     }
 
     public function getSpracheId($url)
