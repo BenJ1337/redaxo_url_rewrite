@@ -52,7 +52,7 @@ class CMSManager {
         foreach ($artikelList as $artikel) {
             if(isset($sprachenMap[$artikel->getSprache()])) {
                 $artikel->setSprache($sprachenMap[$artikel->getSprache()]);
-                // Setze Kategorie, falls der Artikel einer untergeordnet ist.
+                // Setze Kategorie, falls der Artikel einer Kategroie untergeordnet ist.
                 if($artikel->getSprache() != null
                         && isset($kategorienMap[$artikel->getId()][$artikel->getSprache()->getId()])
                        && $kategorienMap[$artikel->getId()][$artikel->getSprache()->getId()] != null
