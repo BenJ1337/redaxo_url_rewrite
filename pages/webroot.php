@@ -2,17 +2,23 @@
 $html = '';
 
 if (isset($_POST['webroot'])) {
+    $error = true;
     if (!empty($_POST['webroot'])) {
         $newSubdirectory = redaxo_url_rewrite\URLManager::convertValidURL($_POST['webroot']);
         $newSubdirectory = str_replace('%2F', '/', $newSubdirectory);
-        rex_config::set($this->getName(), 'redaxo_root', $newSubdirectory);
 
-        $html .= "<div class=\"alert alert-success\">";
-        $html .= "<p><b>Unterverzeichnis (\"" . $newSubdirectory . "\") wurde erfolgreich als Wurzelverzeichnis gesetzt!</p>";
+        if(!str_contains($newSubdirectory, '//')) {
+            rex_config::set($this->getName(), 'redaxo_root', $newSubdirectory);
+            $error = false;
+        }
+    } 
+    if($error) {
+        $html .= "<div class=\"alert alert-danger\">";
+        $html .= "<p><b>Unterverzeichnis \"" . $_POST['webroot'] . "\" ist nicht valide!</p>";
         $html .= "</div>";
     } else {
-        $html .= "<div class=\"alert alert-danger\">";
-        $html .= "<p><b>Unterverzeichnis (\"" . $_POST['webroot'] . "\") ist nicht valide!</p>";
+        $html .= "<div class=\"alert alert-success\">";
+        $html .= "<p><b>Unterverzeichnis \"" . $newSubdirectory . "\" wurde erfolgreich als Wurzelverzeichnis gesetzt!</p>";
         $html .= "</div>";
     }
 }

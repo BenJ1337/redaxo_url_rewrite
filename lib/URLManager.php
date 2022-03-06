@@ -68,23 +68,15 @@ class URLManager
     public function getURL($aId, $cId)
     {
         $redaxoRoot = URLManager::getSubdirectory();
-        if ($redaxoRoot !== '/') {
-            while (str_starts_with($redaxoRoot, '/')) {
-                $redaxoRoot = substr($redaxoRoot, 1, strlen($redaxoRoot));
-            }
-            while (str_ends_with($redaxoRoot, '/')) {
-                $redaxoRoot = substr($redaxoRoot, 0, strlen($redaxoRoot) - 1);
-            }
+        while (str_ends_with($redaxoRoot, '/')) {
+            $redaxoRoot = substr($redaxoRoot, 0, strlen($redaxoRoot) - 1);
         }
         if (isset($this->idUrlMap[$cId][$aId])) {
             $url = $this->idUrlMap[$cId][$aId];
             if ($url != null) {
                 $this->urlIdMap[$url]['aId'] = $aId;
                 $this->urlIdMap[$url]['cId'] = $cId;
-                if ($redaxoRoot !== '') {
-                    return '/' . $redaxoRoot . $url;
-                }
-                return $url;
+                return $redaxoRoot . $url;
             } 
         }
         return $redaxoRoot . "/index.php?article_id=" . $aId . "&clang=" . $cId;
@@ -93,6 +85,9 @@ class URLManager
     public static function getSubdirectory()
     {
         $redaxoRoot = rex_config::get(rex_addon::get('redaxo_url_rewrite')->getName(), 'redaxo_root', '/');
+        if(empty($redaxoRoot) || $redaxoRoot === '/') {
+            return '/';
+        }
         if (!str_ends_with($redaxoRoot, '/')) {
             $redaxoRoot .= '/';
         }
