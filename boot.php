@@ -21,8 +21,9 @@ if (!rex::isBackend()) {
         $getParamSpracheId = "clang=";
         $getParams = parse_url($_SERVER['REQUEST_URI'], PHP_URL_QUERY);
         if (
-            strpos($getParams, $getParamArtikelId) === false
-            && strpos($getParams, $getParamSpracheId) === false
+           null === $getParams
+            || (strpos($getParams, $getParamArtikelId) === false
+            && strpos($getParams, $getParamSpracheId) === false)
         ) {
             $um = redaxo_url_rewrite\URLManager::getInstance();
 
