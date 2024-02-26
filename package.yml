@@ -1,5 +1,5 @@
 package: redaxo_url_rewrite
-version: '1.0'
+version: '1.0.0'
 author: Benjamin Hacker
 supportpage: benjamin-hacker.de
 docspage: benjamin-hacker.de
