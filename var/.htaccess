@@ -18,5 +18,6 @@ AddDefaultCharset utf-8
     RewriteCond %{REQUEST_URI} !^.*\..*$
 
     # URLs umleiten zur /index.php
+    # If you use a subdirectory, then you've add it before /index.php
     RewriteRule ^(.*)$ %{ENV:BASE}<subdir>/index.php?%{QUERY_STRING} [L]
 </IfModule>
