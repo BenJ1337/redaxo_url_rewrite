@@ -3,7 +3,6 @@
 namespace redaxo_url_rewrite;
 
 use rex_addon,
-
     rex_config;
 
 class URLManager
